@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>MeenahCHAT - Profile & Voice</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#e6005c">
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,sans-serif;background:#fff0f5;overflow:hidden}
+.header{background:#e6005c;color:white;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
+.btn{background:#e6005c;color:white;border:none;padding:11px 16px;border-radius:12px;font-weight:700;cursor:pointer;font-size:14px}
+.btn-dark{background:#111}.btn-green{background:#00b050}.btn-blue{background:#0d6efd}
+.card{background:white;border-radius:16px;padding:14px;margin:8px;border:1px solid #ffe0eb;box-shadow:0 2px 8px rgba(230,0,92,0.08)}
+input{width:100%;padding:14px;margin:6px 0;border:1.5px solid #ffd1e0;border-radius:12px;font-size:16px;outline:none}
+input:focus{border-color:#e6005c}
+#rolePage{position:fixed;top:0;left:0;width:100%;height:100%;background:white;z-index:9999;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:24px;text-align:center}
+.page{position:fixed;top:0;left:0;width:100%;height:100%;background:white;z-index:9998;display:none;flex-direction:column;padding:20px;overflow-y:auto}
+.chat-bubble{max-width:78%;padding:10px 14px;border-radius:18px;margin:6px 0;font-size:14px;line-height:1.4;word-break:break-word}
+.me{background:#e6005c;color:white;align-self:flex-end;border-bottom-right-radius:4px}
+.them{background:#f1f1f1;color:#111;align-self:flex-start;border-bottom-left-radius:4px}
+.callScreen{position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(180deg,#111,#331);z-index:10000;display:none;flex-direction:column;justify-content:center;align-items:center;color:white;text-align:center;padding:20px}
+video{width:90%;max-width:380px;height:42vh;background:#222;border-radius:20px;margin:10px 0;object-fit:cover}
+.profile-img{width:110px;height:110px;border-radius:50%;object-fit:cover;border:4px solid #e6005c;background:#ffe0eb;cursor:pointer}
+.online-dot{width:10px;height:10px;background:#00b050;border-radius:50%;display:inline-block;margin-right:6px}
+.voice-wave{display:flex;gap:3px;align-items:center;height:20px}
+.voice-wave span{width:3px;background:#e6005c;border-radius:3px;animation:wave 0.8s infinite}
+@keyframes wave{0%,100%{height:6px}50%{height:18px}}
+</style>
+</head>
+<body>
+
+<div id="rolePage">
+  <h1 style="margin:0;color:#e6005c;font-size:36px">💬 MeenahCHAT</h1>
+  <p style="color:#888">Private + Voice + Profile</p>
+  <div style="background:#fff0f5;padding:14px;border-radius:14px;margin:18px 0;width:100%"><p style="font-size:12px;color:#666">✅ Hoto a Profile<br>✅ Voice Chat & Voice Message<br>✅ Sirri 100% - Babu server</p></div>
+  <button class="btn" style="width:100%;padding:18px;font-size:16px" onclick="showPage('registerPage')">Fara - Register</button>
+</div>
+
+<div id="registerPage" class="page">
+  <h2 style="color:#e6005c;margin:0">Register MeenahCHAT</h2>
+  <p style="color:#888;font-size:13px">Number + OTP + Hoto</p>
+  <img id="regPreview" class="profile-img" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" onclick="document.getElementById('regPhoto').click()">
+  <small style="color:#e6005c">Danna hoton ka saka naka</small>
+  <input type="file" id="regPhoto" accept="image/*" style="display:none" onchange="previewImg(this,'regPreview')">
+  <input id="regName" placeholder="Sunanka - Meenah" maxlength="20">
+  <input id="regPhone" placeholder="Phone - 09166904453" type="tel" maxlength="11">
+  <button class="btn" style="width:100%;margin-top:10px;padding:16px" onclick="sendOTP()">Tura OTP →</button>
+  <div id="otpBox" style="display:none;margin-top:14px">
+    <p>OTP: <span id="otpShow" style="color:#e6005c;font-size:20px;font-weight:800"></span></p>
+    <input id="otpInput" placeholder="OTP 6 digits" type="tel" maxlength="6">
+    <button class="btn btn-green" style="width:100%;padding:16px" onclick="verifyOTP()">Tabbatar</button>
+  </div>
+  <button class="btn btn-dark" style="width:100%;margin-top:10px" onclick="backToRole()">← Back</button>
+</div>
+
+<div id="mainApp" style="display:none;flex-direction:column;height:100vh">
+  <div class="header">
+    <div style="display:flex;align-items:center;gap:10px"><img id="myAvatar" style="width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid white" src=""><b id="userTitle">Meenah</b></div>
+    <div><span onclick="openProfile()" style="cursor:pointer;margin-right:12px">👤</span><span onclick="logout()" style="cursor:pointer">🚪</span></div>
+  </div>
+  <div style="display:flex;background:white;border-bottom:1px solid #ffe0eb">
+    <div id="tabBtnChats" onclick="switchTab('chats')" style="flex:1;padding:14px;text-align:center;font-weight:700;cursor:pointer;border-bottom:3px solid #e6005c;color:#e6005c">Chats</div>
+    <div id="tabBtnCalls" onclick="switchTab('calls')" style="flex:1;padding:14px;text-align:center;font-weight:700;cursor:pointer;border-bottom:3px solid transparent;color:#999">Calls</div>
+    <div id="tabBtnProfile" onclick="switchTab('profile')" style="flex:1;padding:14px;text-align:center;font-weight:700;cursor:pointer;border-bottom:3px solid transparent;color:#999">Profile</div>
+  </div>
+
+  <div id="view-chats" style="flex:1;overflow-y:auto;padding:8px;padding-bottom:80px">
+    <div style="padding:8px;display:flex;gap:8px"><input id="newContactPhone" placeholder="Add phone 080..." style="flex:1;margin:0"><button class="btn" onclick="addContact()">+</button></div>
+    <div id="contactList"></div>
+    <div id="chatArea" style="display:none;flex-direction:column;height:70vh">
+      <div style="background:white;padding:10px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center">
+        <div style="display:flex;align-items:center;gap:8px"><img id="chatAvatar" style="width:32px;height:32px;border-radius:50%;object-fit:cover" src=""><b id="chatWithName">-</b></div>
+        <div><button class="btn btn-green" onclick="startCall(false)" style="padding:8px 10px">🎙️ Voice</button> <button class="btn btn-blue" onclick="startCall(true)" style="padding:8px 10px">📹
